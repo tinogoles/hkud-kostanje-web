@@ -894,6 +894,54 @@
             } else {
                 playIcon.className = "fa-solid fa-play text-lg ms-0.5";
             }
+ // Stvarne audio datoteke (pripazite da nazivi odgovaraju datotekama u vašoj 'audio' mapi)
+        const audioFiles = [
+            "audio/dojdi-u-krilo-moje.mp3",
+            "audio/omisljanska-rozeta.mp3"
+        ];
+
+        // Stvaranje pravog audio objekta u pozadini
+        let audioElement = new Audio(audioFiles[0]);
+
+        // Stvarne audio datoteke s ispravnom putanjom do mape 'audio'
+        const audioFiles = [
+            "audio/Deveta_ura.mp3",
+            "audio/Odvila_se.mp3"
+        ];
+
+        let currentTrackIdx = 0;
+        let isPlayingAudio = false;
+
+        function selectTrack(index) {
+            currentTrackIdx = index;
+            document.getElementById('song-title').textContent = tracks[index].title;
+            document.getElementById('song-timer').textContent = `00:00 / ${tracks[index].duration}`;
+            
+            // Promijeni izvor zvuka na novu pjesmu i pokreni je
+            audioElement.src = audioFiles[index];
+            audioElement.play();
+            isPlayingAudio = true;
+            updatePlayIcon();
+        }
+
+        function togglePlayAudio() {
+            if (isPlayingAudio) {
+                audioElement.pause();
+                isPlayingAudio = false;
+            } else {
+                audioElement.play();
+                isPlayingAudio = true;
+            }
+            updatePlayIcon();
+        }
+
+        function updatePlayIcon() {
+            const playIcon = document.getElementById('play-icon');
+            if (isPlayingAudio) {
+                playIcon.className = "fa-solid fa-pause text-lg";
+            } else {
+                playIcon.className = "fa-solid fa-play text-lg ms-0.5";
+            }
         }
 
         function prevTrack() {
@@ -911,6 +959,11 @@
             const clickX = e.clientX - rect.left;
             const percentage = (clickX / rect.width) * 100;
             document.getElementById('audio-progress').style.width = percentage + '%';
+            
+            // Premotavanje stvarne pjesme
+            if (audioElement.duration) {
+                audioElement.currentTime = (percentage / 100) * audioElement.duration;
+            }
         }
 
         // Radio PoRaT Stream Toggle
