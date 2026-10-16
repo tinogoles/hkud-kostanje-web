@@ -894,19 +894,14 @@
             } else {
                 playIcon.className = "fa-solid fa-play text-lg ms-0.5";
             }
- // Stvarne audio datoteke (pripazite da nazivi odgovaraju datotekama u vašoj 'audio' mapi)
+ // Stvarne audio datoteke s ispravnom putanjom do mape 'audio'
         const audioFiles = [
-            "audio/dojdi-u-krilo-moje.mp3",
-            "audio/omisljanska-rozeta.mp3"
+            "audio/Deveta_ura.mp3",
+            "audio/Odvila_se.mp3"
         ];
 
         // Stvaranje pravog audio objekta u pozadini
         let audioElement = new Audio(audioFiles[0]);
-
-        // Stvarne audio datoteke s ispravnom putanjom do mape 'audio'
-        const audioFiles = [
-            "audio/Deveta_ura.mp3",
-            "audio/Odvila_se.mp3"
         ];
 
         let currentTrackIdx = 0;
