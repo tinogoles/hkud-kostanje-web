@@ -865,36 +865,7 @@
             mobileMenu.classList.toggle('hidden');
         });
 
-        // Audio Player Simulation
-        const tracks = [
-            { title: "1. Dojdi u krilo moje (Izvorno)", duration: "03:20" },
-            { title: "2. Omišljanska Rozeta (Live nastup)", duration: "04:05" }
-        ];
-
-        let currentTrackIdx = 0;
-        let isPlayingAudio = false;
-
-        function selectTrack(index) {
-            currentTrackIdx = index;
-            document.getElementById('song-title').textContent = tracks[index].title;
-            document.getElementById('song-timer').textContent = `00:00 / ${tracks[index].duration}`;
-            isPlayingAudio = true;
-            updatePlayIcon();
-        }
-
-        function togglePlayAudio() {
-            isPlayingAudio = !isPlayingAudio;
-            updatePlayIcon();
-        }
-
-        function updatePlayIcon() {
-            const playIcon = document.getElementById('play-icon');
-            if (isPlayingAudio) {
-                playIcon.className = "fa-solid fa-pause text-lg";
-            } else {
-                playIcon.className = "fa-solid fa-play text-lg ms-0.5";
-            }
- // Stvarne audio datoteke s ispravnom putanjom do mape 'audio'
+   // Stvarne audio datoteke s ispravnom putanjom do mape 'audio'
         const audioFiles = [
             "audio/Deveta_ura.mp3",
             "audio/Odvila_se.mp3"
@@ -902,6 +873,10 @@
 
         // Stvaranje pravog audio objekta u pozadini
         let audioElement = new Audio(audioFiles[0]);
+
+        const tracks = [
+            { title: "1. Deveta ura", duration: "03:20" },
+            { title: "2. Odvila se", duration: "04:05" }
         ];
 
         let currentTrackIdx = 0;
@@ -959,6 +934,7 @@
             if (audioElement.duration) {
                 audioElement.currentTime = (percentage / 100) * audioElement.duration;
             }
+        
         }
 
         // Radio PoRaT Stream Toggle
