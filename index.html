@@ -893,7 +893,30 @@
             isPlayingAudio = true;
             updatePlayIcon();
         }
+// Pomoćna funkcija za formatiranje sekundi u minute:sekunde (mm:ss)
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
 
+        // Slušač događaja koji automatski pokreće brojač i traku dok pjesma svira
+        audioElement.addEventListener('timeupdate', () => {
+            if (audioElement.duration) {
+                const currentSec = audioElement.currentTime;
+                const durationSec = audioElement.duration;
+                
+                // Ažuriraj tekst timer-a (npr. 01:15 / 04:05)
+                const formattedCurrent = formatTime(currentSec);
+                const formattedDuration = formatTime(durationSec);
+                document.getElementById('song-timer').textContent = `${formattedCurrent} / ${formattedDuration}`;
+                
+                // Ažuriraj širinu žute linije napretka
+                const percentage = (currentSec / durationSec) * 100;
+                document.getElementById('audio-progress').style.width = percentage + '%';
+            }
+        });
+        
         function togglePlayAudio() {
             if (isPlayingAudio) {
                 audioElement.pause();
