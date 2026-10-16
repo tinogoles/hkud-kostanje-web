@@ -343,14 +343,15 @@
 
                         <!-- Playlist -->
                         <div class="mt-4 space-y-1">
-                            <button onclick="selectTrack(0)" class="w-full text-left p-2.5 rounded-xl hover:bg-sky-50 transition-colors flex justify-between items-center text-xs font-semibold text-slate-700">
-                                <span>1. Deveta ura</span>
-                                <span class="text-slate-400">3:20</span>
-                            </button>
-                            <button onclick="selectTrack(1)" class="w-full text-left p-2.5 rounded-xl hover:bg-sky-50 transition-colors flex justify-between items-center text-xs font-semibold text-slate-700">
-                                <span>2. Odvila se</span>
-                                <span class="text-slate-400">4:05</span>
-                            </button>
+            <button onclick="selectTrack(0)" class="w-full text-left p-2.5 rounded-xl hover:bg-sky-50 transition-colors flex justify-between items-center text-xs font-semibold text-slate-700">
+                <span>1. Deveta ura</span>
+                <span class="text-slate-400">3:20</span>
+            </button>
+            <button onclick="selectTrack(1)" class="w-full text-left p-2.5 rounded-xl hover:bg-sky-50 transition-colors flex justify-between items-center text-xs font-semibold text-slate-700">
+                <span>2. Odvila se</span>
+                <span class="text-slate-400">4:05</span>
+            </button>
+        </div>
                         </div>
                     </div>
                 </div>
@@ -486,10 +487,13 @@
         let currentTrackIdx = 0;
         let isPlayingAudio = false;
 
-        function selectTrack(index) {
+     function selectTrack(index) {
             currentTrackIdx = index;
             document.getElementById('song-title').textContent = tracks[index].title;
+            
+            // Postavi početno stanje dok se audio ne učita
             document.getElementById('song-timer').textContent = `00:00 / ${tracks[index].duration}`;
+            document.getElementById('audio-progress').style.width = '0%';
             
             // Promijeni izvor zvuka na novu pjesmu i pokreni je
             audioElement.src = audioFiles[index];
