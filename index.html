@@ -865,101 +865,102 @@
             mobileMenu.classList.toggle('hidden');
         });
 
-   // Stvarne audio datoteke s ispravnom putanjom do mape 'audio'
-        const audioFiles = [
-            "audio/Deveta_ura.mp3",
-            "audio/Odvila_se.mp3"
-        ];
+ <script>
+    // Stvarne audio datoteke s ispravnom putanjom do mape 'audio'
+    const audioFiles = [
+        "audio/Deveta_ura.mp3",
+        "audio/Odvila_se.mp3"
+    ];
 
-        // Stvaranje pravog audio objekta u pozadini
-        let audioElement = new Audio(audioFiles[0]);
+    // Stvaranje pravog audio objekta u pozadini
+    let audioElement = new Audio(audioFiles[0]);
 
-        const tracks = [
-            { title: "1. Deveta ura", duration: "03:20" },
-            { title: "2. Odvila se", duration: "04:05" }
-        ];
+    const tracks = [
+        { title: "1. Deveta ura", duration: "03:20" },
+        { title: "2. Odvila se", duration: "04:05" }
+    ];
 
-        let currentTrackIdx = 0;
-        let isPlayingAudio = false;
+    let currentTrackIdx = 0;
+    let isPlayingAudio = false;
 
-        function selectTrack(index) {
-            currentTrackIdx = index;
-            document.getElementById('song-title').textContent = tracks[index].title;
-            document.getElementById('song-timer').textContent = `00:00 / ${tracks[index].duration}`;
+    function selectTrack(index) {
+        currentTrackIdx = index;
+        document.getElementById('song-title').textContent = tracks[index].title;
+        document.getElementById('song-timer').textContent = `00:00 / ${tracks[index].duration}`;
+        
+        // Promijeni izvor zvuka na novu pjesmu i pokreni je
+        audioElement.src = audioFiles[index];
+        audioElement.play();
+        isPlayingAudio = true;
+        updatePlayIcon();
+    }
+
+    // Pomoćna funkcija za formatiranje sekundi u minute:sekunde (mm:ss)
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    }
+
+    // Slušač događaja koji automatski pokreće brojač i traku dok pjesma svira
+    audioElement.addEventListener('timeupdate', () => {
+        if (audioElement.duration) {
+            const currentSec = audioElement.currentTime;
+            const durationSec = audioElement.duration;
             
-            // Promijeni izvor zvuka na novu pjesmu i pokreni je
-            audioElement.src = audioFiles[index];
+            // Ažuriraj tekst timer-a (npr. 01:15 / 04:05)
+            const formattedCurrent = formatTime(currentSec);
+            const formattedDuration = formatTime(durationSec);
+            document.getElementById('song-timer').textContent = `${formattedCurrent} / ${formattedDuration}`;
+            
+            // Ažuriraj širinu žute linije napretka
+            const percentage = (currentSec / durationSec) * 100;
+            document.getElementById('audio-progress').style.width = percentage + '%';
+        }
+    });
+
+    function togglePlayAudio() {
+        if (isPlayingAudio) {
+            audioElement.pause();
+            isPlayingAudio = false;
+        } else {
             audioElement.play();
             isPlayingAudio = true;
-            updatePlayIcon();
         }
-// Pomoćna funkcija za formatiranje sekundi u minute:sekunde (mm:ss)
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = Math.floor(seconds % 60);
-            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-        }
+        updatePlayIcon();
+    }
 
-        // Slušač događaja koji automatski pokreće brojač i traku dok pjesma svira
-        audioElement.addEventListener('timeupdate', () => {
-            if (audioElement.duration) {
-                const currentSec = audioElement.currentTime;
-                const durationSec = audioElement.duration;
-                
-                // Ažuriraj tekst timer-a (npr. 01:15 / 04:05)
-                const formattedCurrent = formatTime(currentSec);
-                const formattedDuration = formatTime(durationSec);
-                document.getElementById('song-timer').textContent = `${formattedCurrent} / ${formattedDuration}`;
-                
-                // Ažuriraj širinu žute linije napretka
-                const percentage = (currentSec / durationSec) * 100;
-                document.getElementById('audio-progress').style.width = percentage + '%';
-            }
-        });
+    function updatePlayIcon() {
+        const playIcon = document.getElementById('play-icon');
+        if (isPlayingAudio) {
+            playIcon.className = "fa-solid fa-pause text-lg";
+        } else {
+            playIcon.className = "fa-solid fa-play text-lg ms-0.5";
+        }
+    }
+
+    function prevTrack() {
+        currentTrackIdx = (currentTrackIdx - 1 + tracks.length) % tracks.length;
+        selectTrack(currentTrackIdx);
+    }
+
+    function nextTrack() {
+        currentTrackIdx = (currentTrackIdx + 1) % tracks.length;
+        selectTrack(currentTrackIdx);
+    }
+
+    function seekAudio(e) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const percentage = (clickX / rect.width) * 100;
+        document.getElementById('audio-progress').style.width = percentage + '%';
         
-        function togglePlayAudio() {
-            if (isPlayingAudio) {
-                audioElement.pause();
-                isPlayingAudio = false;
-            } else {
-                audioElement.play();
-                isPlayingAudio = true;
-            }
-            updatePlayIcon();
+        // Premotavanje stvarne pjesme
+        if (audioElement.duration) {
+            audioElement.currentTime = (percentage / 100) * audioElement.duration;
         }
-
-        function updatePlayIcon() {
-            const playIcon = document.getElementById('play-icon');
-            if (isPlayingAudio) {
-                playIcon.className = "fa-solid fa-pause text-lg";
-            } else {
-                playIcon.className = "fa-solid fa-play text-lg ms-0.5";
-            }
-        }
-
-        function prevTrack() {
-            currentTrackIdx = (currentTrackIdx - 1 + tracks.length) % tracks.length;
-            selectTrack(currentTrackIdx);
-        }
-
-        function nextTrack() {
-            currentTrackIdx = (currentTrackIdx + 1) % tracks.length;
-            selectTrack(currentTrackIdx);
-        }
-
-        function seekAudio(e) {
-            const rect = e.currentTarget.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const percentage = (clickX / rect.width) * 100;
-            document.getElementById('audio-progress').style.width = percentage + '%';
-            
-            // Premotavanje stvarne pjesme
-            if (audioElement.duration) {
-                audioElement.currentTime = (percentage / 100) * audioElement.duration;
-            }
-        
-        }
-
+    }
+</script>
         // Radio PoRaT Stream Toggle
         let isRadioStreaming = false;
         function togglePoRaTRadio() {
